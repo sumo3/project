@@ -13,10 +13,10 @@
 
 //路径匹配到路由规则  /  就会自动执行function 匿名函数
 //Route 底层路由类  get请求方式   /路由规则
-Route::get('/', function () {
-    //加载前台首页
-    echo "这是前台首页";
-});
+// Route::get('/', function () {
+//     //加载前台首页
+//     echo "这是前台首页";
+// });
 
 
 // //限制参数路由
@@ -147,25 +147,57 @@ Route::get('/', function () {
 //文件操作
 //Route::resource("/file","Admin\FileController");
 
-//加载后台首页
-Route::resource("/admin","Admin\AdminController");
 
-//用户模块
-Route::resource("/user","Admin\UserController");
-
-//产品管理
-Route::resource("/product","Admin\ProductController");
-
-//友情链接
-Route::resource("/link","Admin\LinkController");
-
-//留言管理
-Route::resource("/liuyan","Admin\LiuyanController");
-
-//前台
-Route::resource("/vie","Admin\VieController");
+	//前台首页
+	Route::resource("/","Home\IndexController");
 
 
+	//后台登陆
+	Route::resource('/login',"Admin\LoginController");
 
-//数据库操作
-Route::resource("/db","Admin\DbController");
+	//后台路由组
+	Route::group(['middleware'=>'login'],function(){
+
+		//数据库操作
+		Route::resource("/db","Admin\DbController");
+
+		//加载后台首页
+		Route::resource("/admin","Admin\AdminController");
+
+		//用户模块
+		Route::resource("/user","Admin\UserController");
+
+		//产品管理
+		Route::resource("/product","Admin\ProductController");
+
+		//友情链接
+		Route::resource("/link","Admin\LinkController");
+
+		//留言管理
+		Route::resource("/liuyan","Admin\LiuyanController");
+
+		//后台管理员
+		Route::resource("/admin_user","Admin\Admin_userController");
+
+		//分配角色
+		Route::get('/adminrole/{id}','Admin\Admin_userController@role');
+
+		//保存角色
+		Route::post('/saverole',"Admin\Admin_userController@saverole");
+
+		//后台学习资料分类模块
+		Route::resource("/type","Admin\TypeController");
+
+		//角色管理
+		Route::resource('/rolelist','Admin\RolelistController');
+
+		//分配权限操作
+		Route::get('/auth/{id}','Admin\RolelistController@auth');
+
+		//保存权限
+		Route::post('/saveauth','Admin\RolelistController@saveauth');
+
+		//权限管理
+		Route::resource('/authlist','Admin\AuthlistController');
+
+	});	
