@@ -13,10 +13,10 @@
 
 //路径匹配到路由规则  /  就会自动执行function 匿名函数
 //Route 底层路由类  get请求方式   /路由规则
-Route::get('/', function () {
-    //加载前台首页
-    echo "这是前台首页";
-});
+// Route::get('/', function () {
+//     //加载前台首页
+//     echo "这是前台首页";
+// });
 
 
 // //限制参数路由
@@ -147,6 +147,10 @@ Route::get('/', function () {
 //文件操作
 //Route::resource("/file","Admin\FileController");
 
+
+//数据库操作
+Route::resource("/db","Admin\DbController");
+
 //加载后台首页
 Route::resource("/admin","Admin\AdminController");
 
@@ -162,10 +166,17 @@ Route::resource("/link","Admin\LinkController");
 //留言管理
 Route::resource("/liuyan","Admin\LiuyanController");
 
-//前台
-Route::resource("/vie","Admin\VieController");
+//前台首页
+Route::resource("/","Home\IndexController");
 
+//后台学习资料分类模块
+Route::resource("/type","Admin\TypeController");
 
+//学习资料模块
+Route::resource("/study","Admin\StudyController");
 
-//数据库操作
-Route::resource("/db","Admin\DbController");
+//后台题目分类模块
+Route::resource("/tmtype","Admin\TMTypeController");
+
+//后台音乐模块
+Route::resource("/liuyan","Admin\LiuyanController");

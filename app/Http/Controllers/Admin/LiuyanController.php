@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use DB;
 class LiuyanController extends Controller
 {
     /**
@@ -12,13 +12,16 @@ class LiuyanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    //用户列表
-    public function index()
-    {
-        // echo "this is index";
-        //加载模板
-        return view("Admin.Liuyan.index");
 
+    public function index(Request $request)
+    {
+        //关联表查询  关联liuyan表和user表,  liuyan中的uid和user中的id对应   并根据需要改字段名字
+        $data=DB::table("liuyan")->join('user','liuyan.uid','=','user.id')->select(DB::raw('liuyan.id as id,liuyan.uid as uid,liuyan.content,liuyan.time,user.name as name'))->get();
+        //dd($data);
+        $total=count($data);
+        //dd($total);
+        $data=DB::table("liuyan")->join('user','liuyan.uid','=','user.id')->select(DB::raw('liuyan.id as id,liuyan.uid as uid,liuyan.content,liuyan.time,user.name as name'))->where('name','like',"%".$request->input('keywords')."%")->orderBy('id')->paginate(5);
+       return view("Admin.Liuyan.index",['data'=>$data,'total'=>$total,'request'=>$request->all()]);
     }
 
     /**
@@ -26,12 +29,9 @@ class LiuyanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    //用户添加
-    public function create()
+    public function create(Request $request)
     {
-        // echo "this is user add";
-        //加载添加模板
-        return view("Admin.Users.add");
+        //
     }
 
     /**
@@ -41,7 +41,7 @@ class LiuyanController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
         //
     }
 
@@ -64,7 +64,7 @@ class LiuyanController extends Controller
      */
     public function edit($id)
     {
-        //
+       
     }
 
     /**
@@ -76,7 +76,7 @@ class LiuyanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+       
     }
 
     /**
@@ -87,6 +87,15 @@ class LiuyanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //获取删除的id
+        //echo $id;
+        //根据id去留言表中删除对应数据
+        $data=DB::table("liuyan")->where("id",'=',$id)->first();
+        //dd($data);
+        if(DB::table('liuyan')->where('id','=',$id)->delete()){
+            return redirect('/liuyan')->with('success','删除成功');
+        }else{
+            return redirect('/liuyan')->with('error','删除失败');
+        }
     }
 }
